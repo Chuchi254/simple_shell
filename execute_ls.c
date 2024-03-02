@@ -5,32 +5,27 @@
  */
 void execute_ls(void)
 {
-	int count, status;
+	int status;
 	pid_t child_pid;
+	char *argv[] = {"/bin/ls",  NULL};
 
-	for (count = 0; count < 5; count++)
+	child_pid = fork();
+	if (child_pid == -1)
 	{
-		child_pid = fork();
-		if (child_pid == -1)
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	else if (child_pid == 0)
+	{
+		if (execve(argv[0], argv, NULL) == -1)
 		{
-			perror("fork");
+			perror("execve");
 			exit(EXIT_FAILURE);
 		}
-		else if (child_pid == 0)
-		{
-			char *argv[] = {"/bin/ls", "-l", "/tmp", NULL};
-
-			if (execve(argv[0], argv, NULL) == -1)
-			{
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
-		{
-			wait(&status);
-			printf("Child %d finished\n", count + 1);
-			break;
-		}
+		exit(0);
+	}
+	else
+	{
+		wait(&status);
 	}
 }
