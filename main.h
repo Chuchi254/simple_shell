@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+extern char **environ;
+
 ssize_t my_getline(char **lineptr, size_t *size, FILE *file);
 char *my_strtok(char *str, const char *delim);
 void print(void);
